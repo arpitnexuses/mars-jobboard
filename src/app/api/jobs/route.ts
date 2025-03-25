@@ -55,12 +55,16 @@ export async function POST(request: Request) {
 export async function GET() {
   try {
     await connectDB();
-    const jobs = await Job.find({}).sort({ datePosted: -1 });
+    
+    const jobs = await Job.find({})
+      .sort({ datePosted: -1 }) // Sort by newest first
+      .lean(); // Convert to plain JavaScript objects
+
     return NextResponse.json(jobs);
   } catch (error: any) {
     console.error('Error fetching jobs:', error);
     return NextResponse.json(
-      { error: 'Internal Server Error', message: error.message },
+      { error: 'Failed to fetch jobs' },
       { status: 500 }
     );
   }

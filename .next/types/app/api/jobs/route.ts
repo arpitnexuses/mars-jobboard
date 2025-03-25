@@ -1,4 +1,4 @@
-// File: /Users/arpitmishra012/Downloads/Mars-Final/src/app/api/jobs/route.ts
+// File: /Users/arpitmishra012/mars-jobboard/src/app/api/jobs/route.ts
 import * as entry from '../../../../../src/app/api/jobs/route.js'
 import type { NextRequest } from 'next/server.js'
 
