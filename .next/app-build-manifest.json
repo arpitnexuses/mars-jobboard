@@ -1,43 +1,20 @@
 {
   "pages": {
-    "/_not-found/page": [
-      "static/chunks/webpack-9d964d8cb0d81fe9.js",
-      "static/chunks/fd9d1056-cf48984c1108c87a.js",
-      "static/chunks/117-2f02adf812842a55.js",
-      "static/chunks/main-app-44c0cb7bcf7ec954.js",
-      "static/chunks/app/_not-found/page-41ffdbb4455d3b7e.js"
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/page.js"
     ],
     "/layout": [
-      "static/chunks/webpack-9d964d8cb0d81fe9.js",
-      "static/chunks/fd9d1056-cf48984c1108c87a.js",
-      "static/chunks/117-2f02adf812842a55.js",
-      "static/chunks/main-app-44c0cb7bcf7ec954.js",
-      "static/css/26406a9d54df03e5.css",
-      "static/chunks/680-2ab0acbd69f0e8f5.js",
-      "static/chunks/app/layout-e773169f43201ddc.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
     ],
     "/jobs/[id]/page": [
-      "static/chunks/webpack-9d964d8cb0d81fe9.js",
-      "static/chunks/fd9d1056-cf48984c1108c87a.js",
-      "static/chunks/117-2f02adf812842a55.js",
-      "static/chunks/main-app-44c0cb7bcf7ec954.js",
-      "static/chunks/app/jobs/[id]/page-ee8b79df021d7099.js"
-    ],
-    "/page": [
-      "static/chunks/webpack-9d964d8cb0d81fe9.js",
-      "static/chunks/fd9d1056-cf48984c1108c87a.js",
-      "static/chunks/117-2f02adf812842a55.js",
-      "static/chunks/main-app-44c0cb7bcf7ec954.js",
-      "static/chunks/338-94abd1594ad2c17f.js",
-      "static/chunks/app/page-211993da2836ca76.js"
-    ],
-    "/post-job/page": [
-      "static/chunks/webpack-9d964d8cb0d81fe9.js",
-      "static/chunks/fd9d1056-cf48984c1108c87a.js",
-      "static/chunks/117-2f02adf812842a55.js",
-      "static/chunks/main-app-44c0cb7bcf7ec954.js",
-      "static/chunks/338-94abd1594ad2c17f.js",
-      "static/chunks/app/post-job/page-4f387fee081adf85.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/jobs/[id]/page.js"
     ]
   }
 }

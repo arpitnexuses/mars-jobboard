@@ -31,7 +31,8 @@ const jobSchema = new mongoose.Schema<JobType>({
   },
   schema: { type: Object }
 }, {
-  timestamps: true
+  timestamps: true,
+  _id: true // Explicitly enable _id
 });
 
 // Create indexes for better query performance
@@ -40,6 +41,12 @@ jobSchema.index({ industry: 1 });
 jobSchema.index({ type: 1 });
 jobSchema.index({ 'location.city': 1 });
 
+// Drop any existing indexes on the collection
 const Job = mongoose.models.Job || mongoose.model<JobType>('Job', jobSchema);
+
+// Drop the problematic index if it exists
+Job.collection?.dropIndex('id_1').catch(() => {
+  // Ignore error if index doesn't exist
+});
 
 export default Job; 

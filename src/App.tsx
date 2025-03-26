@@ -4,7 +4,6 @@ import JobDetails from './components/JobDetails';
 import { Job } from './types';
 
 const initialJob: Job = {
-  _id: "full-time",
   title: "Electronic Engineering Technician",
   company: "MARS Solutions Group",
   companyUrl: "https://getreturnship.com/",

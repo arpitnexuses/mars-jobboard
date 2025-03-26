@@ -8,6 +8,12 @@ const nextConfig = {
         port: '',
         pathname: '/hubfs/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'i0.wp.com',
+        port: '',
+        pathname: '/getreturnship.com/**',
+      }
     ],
   },
 };

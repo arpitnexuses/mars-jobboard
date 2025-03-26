@@ -1,17 +1,24 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ArrowLeft, MapPin, Calendar, Building2, Briefcase } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Building2, Briefcase, Globe, Bookmark } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Job } from '@/types';
 import JobApplicationForm from '@/components/JobApplicationForm';
 
-export default function JobDetailsPage({ params }: { params: { id: string } }) {
+type TabType = 'description' | 'responsibilities' | 'qualifications';
+
+type PageParams = {
+  id: string;
+};
+
+export default function JobDetailsPage({ params }: { params: PageParams }) {
   const router = useRouter();
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isApplicationFormOpen, setIsApplicationFormOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabType>('description');
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -40,7 +47,7 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
       </div>
     );
   }
@@ -58,120 +65,199 @@ export default function JobDetailsPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <button
-          onClick={() => router.back()}
-          className="mb-6 inline-flex items-center text-gray-600 hover:text-indigo-600 transition-colors"
-        >
-          <ArrowLeft className="h-5 w-5 mr-2" />
-          Back to Jobs
-        </button>
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          {/* Company and Title Section */}
-          <div className="p-8 border-b border-gray-200">
-            <div className="flex items-start gap-6">
-              <div className="flex-shrink-0">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex justify-between items-center mb-8">
+          <button
+            onClick={() => router.back()}
+            className="inline-flex items-center text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors group"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+            Back to all jobs
+          </button>
+          <button className="text-gray-500 hover:text-gray-700">
+            <Bookmark className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="p-8">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">{job.title}</h1>
+                <div className="flex items-center gap-2 mb-6">
+                  <span className="text-gray-900">{job.company}</span>
+                  <span className="text-gray-400">•</span>
+                  <span className="text-gray-600 bg-gray-100 px-2 py-0.5 rounded text-sm">Full Time</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-y-4 mb-8">
+                  <div className="flex items-center text-gray-600">
+                    <MapPin className="h-5 w-5 text-gray-400 mr-2" />
+                    <span>{job.location.city}, {job.location.state}</span>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <Briefcase className="h-5 w-5 text-gray-400 mr-2" />
+                    <span>Full Time</span>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <Calendar className="h-5 w-5 text-gray-400 mr-2" />
+                    <span>Posted {String(job.datePosted)}</span>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <Calendar className="h-5 w-5 text-gray-400 mr-2" />
+                    <span>Expires {String(job.expiryDate)}</span>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <button 
+                    onClick={() => setIsApplicationFormOpen(true)}
+                    className="bg-black text-white px-6 py-2.5 rounded text-sm font-medium hover:bg-gray-800 transition-colors"
+                  >
+                    Apply Now
+                  </button>
+                  <button 
+                    className="bg-white text-gray-700 px-6 py-2.5 rounded text-sm font-medium border border-gray-200 hover:bg-gray-50 transition-colors"
+                  >
+                    Share
+                  </button>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-100">
+                <div className="flex border-b border-gray-100">
+                  <button
+                    onClick={() => setActiveTab('description')}
+                    className={`px-8 py-4 text-sm font-medium transition-colors relative ${
+                      activeTab === 'description' 
+                        ? 'text-gray-900 bg-gray-50' 
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    Description
+                    {activeTab === 'description' && (
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black"></div>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('responsibilities')}
+                    className={`px-8 py-4 text-sm font-medium transition-colors relative ${
+                      activeTab === 'responsibilities' 
+                        ? 'text-gray-900 bg-gray-50' 
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    Responsibilities
+                    {activeTab === 'responsibilities' && (
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black"></div>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('qualifications')}
+                    className={`px-8 py-4 text-sm font-medium transition-colors relative ${
+                      activeTab === 'qualifications' 
+                        ? 'text-gray-900 bg-gray-50' 
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    Qualifications
+                    {activeTab === 'qualifications' && (
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-black"></div>
+                    )}
+                  </button>
+                </div>
+
+                <div className="p-8 bg-gray-50">
+                  {activeTab === 'description' && (
+                    <div className="prose prose-gray max-w-none">
+                      <p className="text-gray-600 leading-relaxed">{job.description}</p>
+                      
+                      <div className="mt-8">
+                        <h2 className="text-xl font-bold text-gray-900 mb-6">Education & Experience</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="bg-white p-6 rounded-lg border border-gray-100">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Education</h3>
+                            <p className="text-gray-600">{job.education}</p>
+                          </div>
+                          <div className="bg-white p-6 rounded-lg border border-gray-100">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Experience</h3>
+                            <p className="text-gray-600">{job.experience}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'responsibilities' && job.responsibilities && (
+                    <ul className="space-y-3">
+                      {job.responsibilities.map((responsibility, index) => (
+                        <li key={index} className="flex items-start gap-3">
+                          <span className="flex-shrink-0 w-1.5 h-1.5 mt-2.5 rounded-full bg-gray-400"></span>
+                          <span className="text-gray-600 leading-relaxed">{responsibility}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {activeTab === 'qualifications' && job.qualifications && (
+                    <ul className="space-y-3">
+                      {job.qualifications.map((qualification, index) => (
+                        <li key={index} className="flex items-start gap-3">
+                          <span className="flex-shrink-0 w-1.5 h-1.5 mt-2.5 rounded-full bg-gray-400"></span>
+                          <span className="text-gray-600 leading-relaxed">{qualification}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Company Information Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-6">Company Information</h2>
+              
+              <div className="flex items-start gap-4 mb-6">
                 <img 
                   src={job.companyLogo} 
                   alt={job.company}
-                  className="w-20 h-20 object-contain p-2 border border-gray-200 rounded-lg"
+                  className="w-12 h-12 object-contain"
                 />
+                <div>
+                  <h3 className="font-semibold text-gray-900">{job.company}</h3>
+                  <p className="text-gray-500 text-sm">Business Consulting and services</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">{job.title}</h1>
+
+              <div className="space-y-4">
                 <a 
-                  href={job.companyUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-lg text-indigo-600 hover:text-indigo-800 font-medium inline-flex items-center gap-1"
+                  href={job.companyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer" 
+                  className="text-gray-600 hover:text-gray-900 flex items-center gap-2 text-sm"
                 >
-                  {job.company}
-                  <span className="text-sm">↗</span>
+                  <Globe className="h-5 w-5 text-gray-400" />
+                  {job.companyUrl.replace('https://', '')}
                 </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Job Meta Info */}
-          <div className="p-8 border-b border-gray-200">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="flex items-center text-gray-600">
-                <MapPin className="h-5 w-5 text-gray-400 mr-2" />
-                <span>{job.location.city}, {job.location.state}</span>
-              </div>
-              <div className="flex items-center text-gray-600">
-                <Briefcase className="h-5 w-5 text-gray-400 mr-2" />
-                <span>{job.type}</span>
-              </div>
-              <div className="flex items-center text-gray-600">
-                <Calendar className="h-5 w-5 text-gray-400 mr-2" />
-                <span>Posted {job.datePosted instanceof Date ? job.datePosted.toLocaleDateString() : job.datePosted}</span>
-              </div>
-              <div className="flex items-center text-gray-600">
-                <Building2 className="h-5 w-5 text-gray-400 mr-2" />
-                <span>{job.industry}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Content Sections */}
-          <div className="p-8 space-y-8">
-            <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Description</h2>
-              <p className="text-gray-600 leading-relaxed">{job.description}</p>
-            </section>
-
-            {job.responsibilities && job.responsibilities.length > 0 && (
-              <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Responsibilities</h2>
-                <ul className="space-y-3">
-                  {job.responsibilities.map((responsibility, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-gray-400 mt-1">•</span>
-                      <span className="text-gray-600 leading-relaxed">{responsibility}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-            {job.qualifications && job.qualifications.length > 0 && (
-              <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Qualifications</h2>
-                <ul className="space-y-3">
-                  {job.qualifications.map((qualification, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-gray-400 mt-1">•</span>
-                      <span className="text-gray-600 leading-relaxed">{qualification}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-            <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Requirements</h2>
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Education</h3>
-                  <p className="text-gray-600">{job.education}</p>
-                </div>
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Experience</h3>
-                  <p className="text-gray-600">{job.experience}</p>
+                <div className="text-gray-600 flex items-start gap-2 text-sm">
+                  <MapPin className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p>{job.location.street}</p>
+                    <p>{job.location.city}, {job.location.state} {job.location.zipCode}</p>
+                    <p>{job.location.country}</p>
+                  </div>
                 </div>
               </div>
-            </section>
-          </div>
 
-          {/* Apply Button */}
-          <div className="p-8 bg-gray-50 border-t border-gray-200">
-            <button 
-              onClick={() => setIsApplicationFormOpen(true)}
-              className="w-full bg-indigo-600 text-white py-4 px-6 rounded-lg text-lg font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
-            >
-              Apply Now
-            </button>
+              <button 
+                className="w-full mt-6 text-gray-700 px-6 py-2.5 rounded text-sm font-medium border border-gray-200 hover:bg-gray-50 transition-colors"
+              >
+                View Company Profile
+              </button>
+            </div>
           </div>
         </div>
       </main>

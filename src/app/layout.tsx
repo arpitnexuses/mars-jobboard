@@ -1,14 +1,16 @@
+"use client"
+
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import Header from '@/components/Header';
-
+import HeaderWrapper from '../components/HeaderWrapper';
+import Footer from '../components/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata: Metadata = {
-  title: 'Job Board',
-  description: 'Find your next career opportunity',
-};
+// export const metadata: Metadata = {
+//   title: 'Job Board',
+//   description: 'Find your next career opportunity',
+// };
 
 export default function RootLayout({
   children,
@@ -18,8 +20,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Header />
+        <HeaderWrapper />
         {children}
+        <Footer />
       </body>
     </html>
   );

@@ -8,22 +8,25 @@ export async function POST(request: Request) {
     await connectDB();
     const body = await request.json();
 
+    // Remove any ID-related fields from the request data
+    const { _id, id, ...jobData } = body;
+
     // Convert date strings to Date objects
-    const jobData: Partial<JobType> = {
-      ...body,
-      datePosted: body.datePosted ? new Date(body.datePosted) : new Date(),
-      expiryDate: body.expiryDate ? new Date(body.expiryDate) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    const jobToCreate = {
+      ...jobData,
+      datePosted: jobData.datePosted ? new Date(jobData.datePosted) : new Date(),
+      expiryDate: jobData.expiryDate ? new Date(jobData.expiryDate) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
     };
 
-    // Create new job
-    const job = await Job.create(jobData);
+    // Create new job using insertOne to have more control
+    const result = await Job.collection.insertOne(jobToCreate);
+    
+    // Fetch the created job
+    const job = await Job.findById(result.insertedId);
 
-    // Add the job schema to the page for Google indexing
-    const script = `
-      <script type="application/ld+json">
-        ${JSON.stringify(jobData.schema)}
-      </script>
-    `;
+    if (!job) {
+      throw new Error('Failed to create job');
+    }
 
     return NextResponse.json(job, { status: 201 });
   } catch (error: any) {

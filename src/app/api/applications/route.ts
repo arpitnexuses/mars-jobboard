@@ -3,6 +3,7 @@ import connectDB from '@/lib/mongodb';
 import { NextRequest } from 'next/server';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
+import { sendJobApplicationEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
@@ -77,6 +78,27 @@ export async function POST(request: NextRequest) {
     // Create and save the application
     const application = new Application(applicationData);
     const result = await application.save();
+
+    // Get job details for email
+    const Job = (await import('@/models/Job')).default;
+    const job = await Job.findById(applicationData.jobId);
+    
+    if (!job) {
+      throw new Error('Job not found');
+    }
+
+    // Send email notification
+    await sendJobApplicationEmail({
+      jobTitle: job.title,
+      firstName: applicationData.firstName as string,
+      lastName: applicationData.lastName as string,
+      email: applicationData.email as string,
+      phone: applicationData.phone as string,
+      experience: applicationData.experience as string,
+      education: applicationData.education as string,
+      coverLetter: applicationData.coverLetter as string,
+      resumeUrl: applicationData.resume as string,
+    });
 
     return NextResponse.json(
       { message: 'Application submitted successfully', id: result._id },
