@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ArrowLeft, MapPin, Calendar, Building2, Briefcase, Globe, Bookmark } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Building2, Briefcase, Globe, Bookmark, Share2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Job } from '@/types';
 import JobApplicationForm from '@/components/JobApplicationForm';
@@ -19,6 +19,7 @@ export default function JobDetailsPage({ params }: { params: PageParams }) {
   const [error, setError] = useState<string | null>(null);
   const [isApplicationFormOpen, setIsApplicationFormOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('description');
+  const [showShareAlert, setShowShareAlert] = useState(false);
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -44,6 +45,17 @@ export default function JobDetailsPage({ params }: { params: PageParams }) {
     fetchJob();
   }, [params.id]);
 
+  const handleShare = async () => {
+    try {
+      const jobUrl = `${window.location.origin}/jobs/${params.id}`;
+      await navigator.clipboard.writeText(jobUrl);
+      setShowShareAlert(true);
+      setTimeout(() => setShowShareAlert(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy URL:', err);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -65,6 +77,11 @@ export default function JobDetailsPage({ params }: { params: PageParams }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {showShareAlert && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+          Link copied successfully!
+        </div>
+      )}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-8">
           <button
@@ -118,8 +135,10 @@ export default function JobDetailsPage({ params }: { params: PageParams }) {
                     Apply Now
                   </button>
                   <button 
-                    className="bg-white text-gray-700 px-6 py-2.5 rounded text-sm font-medium border border-gray-200 hover:bg-gray-50 transition-colors"
+                    onClick={handleShare}
+                    className="bg-white text-gray-700 px-6 py-2.5 rounded text-sm font-medium border border-gray-200 hover:bg-gray-50 transition-colors flex items-center gap-2"
                   >
+                    <Share2 className="h-4 w-4" />
                     Share
                   </button>
                 </div>
