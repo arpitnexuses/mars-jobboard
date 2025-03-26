@@ -126,7 +126,7 @@ export default function Home() {
           {/* Content overlay */}
           <div className="absolute inset-0 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
             <h1 className="text-6xl font-bold text-white mb-8 tracking-tight drop-shadow-lg">
-              Find Your Next <span className="text-[#A9282B] font-extrabold">Career</span> Opportunity
+              Find Your Next Career Opportunity
             </h1>
             <p className="text-2xl text-white font-medium mb-12 max-w-3xl mx-auto leading-relaxed drop-shadow-md">
               Discover jobs that match your skills and aspirations. Join thousands of professionals finding their dream careers.
