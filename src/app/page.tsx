@@ -94,7 +94,7 @@ export default function Home() {
   const handlePostJobClick = () => {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     if (isLoggedIn) {
-      router.push('/post-job');
+      router.push('/dashboard/post-job');
     } else {
       router.push('/login');
     }

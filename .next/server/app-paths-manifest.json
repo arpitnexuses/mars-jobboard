@@ -1,4 +1,18 @@
 {
+  "/_not-found": "app/_not-found.js",
+  "/api/applications/count/route": "app/api/applications/count/route.js",
+  "/api/activity/recent/route": "app/api/activity/recent/route.js",
+  "/api/applications/route": "app/api/applications/route.js",
+  "/api/jobs/count/route": "app/api/jobs/count/route.js",
+  "/api/jobs/route": "app/api/jobs/route.js",
+  "/api/jobs/upcoming/route": "app/api/jobs/upcoming/route.js",
   "/page": "app/page.js",
-  "/api/jobs/route": "app/api/jobs/route.js"
+  "/jobs/[id]/page": "app/jobs/[id]/page.js",
+  "/api/jobs/[id]/route": "app/api/jobs/[id]/route.js",
+  "/post-job/page": "app/post-job/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/applications/page": "app/dashboard/applications/page.js",
+  "/dashboard/posted-jobs/page": "app/dashboard/posted-jobs/page.js",
+  "/login/page": "app/login/page.js",
+  "/dashboard/post-job/page": "app/dashboard/post-job/page.js"
 }

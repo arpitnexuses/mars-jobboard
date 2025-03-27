@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Upload, CheckCircle, AlertCircle, User, Mail, Phone, Briefcase, GraduationCap, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -37,6 +37,38 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Reset form when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        experience: '',
+        education: '',
+        resume: null,
+        coverLetter: '',
+      });
+      setError(null);
+      setIsSuccess(false);
+    }
+  }, [isOpen]);
+
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+    
+    // Cleanup function to ensure we remove the class when component unmounts
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+    };
+  }, [isOpen]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -63,6 +95,8 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
       setError(null);
     }
   };
+
+  const resumeFileName = formData.resume ? formData.resume.name : null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,16 +142,22 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[100] p-4"
+          onClick={(e) => {
+            // Only close if clicking directly on the backdrop, not its children
+            if (e.target === e.currentTarget) {
+              onClose();
+            }
+          }}
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl"
+            className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col"
           >
-            <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex justify-between items-center">
+            <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex justify-between items-center z-10">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">Apply for {jobTitle}</h2>
                 <p className="text-sm text-gray-500 mt-1">Please fill out the form below to submit your application</p>
@@ -134,7 +174,7 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-8 text-center"
+                className="p-8 text-center overflow-y-auto"
               >
                 <div className="bg-green-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
                   <CheckCircle className="h-10 w-10 text-green-500" />
@@ -143,7 +183,7 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                 <p className="text-gray-600 max-w-md mx-auto">Thank you for applying. We'll review your application and get back to you soon.</p>
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto">
                 {error && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -274,28 +314,38 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                   <label htmlFor="resume" className="block text-sm font-medium text-gray-700">
                     Resume
                   </label>
-                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-200 border-dashed rounded-xl hover:border-blue-500 transition-colors duration-200">
-                    <div className="space-y-1 text-center">
-                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                      <div className="flex text-sm text-gray-600">
-                        <label
-                          htmlFor="resume"
-                          className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
-                        >
-                          <span>Upload a file</span>
-                          <input
-                            id="resume"
-                            name="resume"
-                            type="file"
-                            accept=".pdf,.doc,.docx"
-                            required
-                            onChange={handleFileChange}
-                            className="sr-only"
-                          />
-                        </label>
-                        <p className="pl-1">or drag and drop</p>
-                      </div>
-                      <p className="text-xs text-gray-500">PDF, DOC, or DOCX up to 10MB</p>
+                  <div className="relative">
+                    <div className="flex items-center">
+                      <label className="cursor-pointer w-full">
+                        <div className={`flex items-center justify-center w-full border ${resumeFileName ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-gray-50'} border-dashed rounded-xl px-4 py-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200`}>
+                          <div className="space-y-1 text-center">
+                            {resumeFileName ? (
+                              <div className="flex items-center justify-center gap-2">
+                                <FileText className="h-5 w-5 text-green-500" />
+                                <span className="text-sm font-medium text-green-600">{resumeFileName}</span>
+                                <CheckCircle className="h-4 w-4 text-green-500 ml-1" />
+                              </div>
+                            ) : (
+                              <>
+                                <Upload className="mx-auto h-6 w-8 text-gray-400" />
+                                <p className="text-sm text-gray-500">
+                                  <span className="font-medium text-blue-600">Click to upload</span> or drag and drop
+                                </p>
+                                <p className="text-xs text-gray-400">PDF or Word (Max 10MB)</p>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        <input
+                          type="file"
+                          id="resume"
+                          name="resume"
+                          required
+                          onChange={handleFileChange}
+                          className="hidden"
+                          accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        />
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -330,7 +380,7 @@ const JobApplicationForm: React.FC<JobApplicationFormProps> = ({ jobId, jobTitle
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-6 py-3 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-all duration-200"
+                    className="px-6 py-3 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-[#26264E] hover:bg-[#1E1E3C] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#26264E] disabled:opacity-50 transition-all duration-200"
                   >
                     {isSubmitting ? 'Submitting...' : 'Submit Application'}
                   </button>

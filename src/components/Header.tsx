@@ -49,12 +49,12 @@ const Header = () => {
             {isLoggedIn ? (
               <>
                 <Link 
-                  href="/post-job"
+                  href="/dashboard"
                   className="group inline-flex items-center px-6 py-2.5 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-[#A9282B]/0 via-[#A9282B]/20 to-[#A9282B]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <Plus className="h-5 w-5 mr-2 relative" />
-                  <span className="relative text-white">Post a Job</span>
+                  <span className="relative text-white">Dashboard</span>
                 </Link>
                 {/* <button
                   onClick={handleLogout}

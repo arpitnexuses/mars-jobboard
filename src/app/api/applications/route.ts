@@ -111,4 +111,66 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+export async function GET() {
+  try {
+    // Connect to MongoDB
+    await connectDB();
+    
+    // Get the mongoose model for applications
+    const Application = (await import('@/models/Application')).default;
+    
+    // Fetch all applications with job details
+    const applications = await Application.find({}).sort({ appliedAt: -1 });
+    
+    return NextResponse.json({ applications }, { status: 200 });
+  } catch (error) {
+    console.error('Error fetching applications:', error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Failed to fetch applications' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Application ID is required' },
+        { status: 400 }
+      );
+    }
+    
+    // Connect to MongoDB
+    await connectDB();
+    
+    // Get the mongoose model for applications
+    const Application = (await import('@/models/Application')).default;
+    
+    // Delete the application
+    const result = await Application.findByIdAndDelete(id);
+    
+    if (!result) {
+      return NextResponse.json(
+        { error: 'Application not found' },
+        { status: 404 }
+      );
+    }
+    
+    return NextResponse.json(
+      { message: 'Application deleted successfully' },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Error deleting application:', error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Failed to delete application' },
+      { status: 500 }
+    );
+  }
 } 

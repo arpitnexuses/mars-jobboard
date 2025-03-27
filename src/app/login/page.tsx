@@ -18,7 +18,7 @@ export default function LoginPage() {
     if (email === 'admin@nexuses.in' && password === 'nexusesjob') {
       // Set session in localStorage
       localStorage.setItem('isLoggedIn', 'true');
-      router.push('/post-job');
+      router.push('/dashboard');
     } else {
       setError('Invalid email or password');
     }

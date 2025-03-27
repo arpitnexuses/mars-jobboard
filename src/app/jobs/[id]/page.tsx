@@ -20,6 +20,7 @@ export default function JobDetailsPage({ params }: { params: PageParams }) {
   const [isApplicationFormOpen, setIsApplicationFormOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('description');
   const [showShareAlert, setShowShareAlert] = useState(false);
+  const [showHeaderForm, setShowHeaderForm] = useState(false);
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -44,6 +45,17 @@ export default function JobDetailsPage({ params }: { params: PageParams }) {
 
     fetchJob();
   }, [params.id]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      // Show the header apply button after scrolling down 300px
+      setShowHeaderForm(scrollPosition > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleShare = async () => {
     try {
@@ -82,6 +94,25 @@ export default function JobDetailsPage({ params }: { params: PageParams }) {
           Link copied successfully!
         </div>
       )}
+
+      {/* Fixed Header Apply Button */}
+      {showHeaderForm && job && (
+        <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-40 py-3 px-4 sm:px-6 lg:px-8 border-b border-gray-100 transition-all transform translate-y-0 animate-slide-down">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">{job.title}</h3>
+              <p className="text-sm text-gray-600">{job.company} • {job.location.city}, {job.location.state}</p>
+            </div>
+            <button 
+              onClick={() => setIsApplicationFormOpen(true)}
+              className="bg-black text-white px-6 py-2 rounded text-sm font-medium hover:bg-gray-800 transition-colors whitespace-nowrap"
+            >
+              Apply Now
+            </button>
+          </div>
+        </div>
+      )}
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-8">
           <button
@@ -272,6 +303,7 @@ export default function JobDetailsPage({ params }: { params: PageParams }) {
               </div>
 
               <button 
+                onClick={() => window.open(job.companyUrl, '_blank')}
                 className="w-full mt-6 text-gray-700 px-6 py-2.5 rounded text-sm font-medium border border-gray-200 hover:bg-gray-50 transition-colors"
               >
                 View Company Profile
@@ -281,12 +313,15 @@ export default function JobDetailsPage({ params }: { params: PageParams }) {
         </div>
       </main>
 
-      <JobApplicationForm
-        jobId={job._id || ''}
-        jobTitle={job.title}
-        isOpen={isApplicationFormOpen}
-        onClose={() => setIsApplicationFormOpen(false)}
-      />
+      {/* Application Form Modal */}
+      {job && (
+        <JobApplicationForm 
+          jobId={params.id}
+          jobTitle={job.title}
+          isOpen={isApplicationFormOpen}
+          onClose={() => setIsApplicationFormOpen(false)}
+        />
+      )}
     </div>
   );
 } 
