@@ -129,6 +129,11 @@ export default function JobDetailsPage({ params }: { params: PageParams }) {
                 "addressCountry": job.location.country
               }
             },
+            "industry": job.industry,
+            "educationRequirements": job.education,
+            "experienceRequirements": job.experience,
+            "qualifications": job.qualifications?.join("\n"),
+            "responsibilities": job.responsibilities?.join("\n"),
             ...(job.salaryMin || job.salaryMax ? {
               "baseSalary": {
                 "@type": "MonetaryAmount",
@@ -141,10 +146,11 @@ export default function JobDetailsPage({ params }: { params: PageParams }) {
                 }
               }
             } : {}),
-            "qualifications": job.qualifications?.join("\n"),
-            "responsibilities": job.responsibilities?.join("\n"),
-            "educationRequirements": job.education,
-            "experienceRequirements": job.experience
+            "identifier": {
+              "@type": "PropertyValue",
+              "name": job.company,
+              "value": job._id
+            }
           })
         }}
       />

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Allow: /jobs/
+Allow: /api/jobs/
+
+# Sitemap
+Sitemap: ${process.env.NEXT_PUBLIC_SITE_URL}/sitemap.xml 
