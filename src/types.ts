@@ -23,4 +23,6 @@ export interface Job {
   schema?: any;
   createdAt?: Date;
   updatedAt?: Date;
+  salaryMin?: number;
+  salaryMax?: number;
 }

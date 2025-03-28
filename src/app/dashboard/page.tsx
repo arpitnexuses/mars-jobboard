@@ -32,6 +32,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [jobCount, setJobCount] = useState(0);
   const [applicationCount, setApplicationCount] = useState(0);
+  const [uploadedResumeCount, setUploadedResumeCount] = useState(0);
   const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [upcomingJobs, setUpcomingJobs] = useState<UpcomingJob[]>([]);
@@ -56,6 +57,10 @@ export default function DashboardPage() {
       const applicationsResponse = await fetch('/api/applications/count');
       const applicationsData = await applicationsResponse.json();
       
+      // Fetch uploaded resumes count
+      const resumesResponse = await fetch('/api/resumes');
+      const resumesData = await resumesResponse.json();
+      
       // Fetch upcoming deadlines (jobs expiring soon)
       const upcomingResponse = await fetch('/api/jobs/upcoming');
       const upcomingData = await upcomingResponse.json();
@@ -66,6 +71,7 @@ export default function DashboardPage() {
       
       setJobCount(jobsData.count || 0);
       setApplicationCount(applicationsData.count || 0);
+      setUploadedResumeCount(resumesData.length || 0);
       setUpcomingJobs(upcomingData.jobs || []);
       setRecentActivity(activityData.activities || []);
       
@@ -74,6 +80,7 @@ export default function DashboardPage() {
       // Fallback to minimal data if API fails
       setJobCount(0);
       setApplicationCount(0);
+      setUploadedResumeCount(0);
     } finally {
       setIsLoading(false);
     }
@@ -90,7 +97,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Metrics row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Jobs Posted Metric */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition duration-200">
           <div className="p-6">
@@ -146,12 +153,40 @@ export default function DashboardPage() {
             </div>
           </Link>
         </div>
+
+        {/* Uploaded Resumes Metric */}
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition duration-200">
+          <div className="p-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-700">Uploaded Resumes</h2>
+              <div className="h-10 w-10 rounded-lg bg-purple-50 flex items-center justify-center">
+                <FileText className="h-5 w-5 text-purple-500" />
+              </div>
+            </div>
+            <div className="mt-4">
+              {isLoading ? (
+                <div className="h-10 bg-gray-100 animate-pulse rounded-md"></div>
+              ) : (
+                <p className="text-3xl font-bold text-gray-900">{uploadedResumeCount}</p>
+              )}
+            </div>
+          </div>
+          <Link 
+            href="/dashboard/resumes" 
+            className="block py-3 px-6 bg-gray-50 border-t border-gray-100 text-sm font-medium text-purple-600 hover:bg-gray-100"
+          >
+            <div className="flex items-center justify-between">
+              <span>View all resumes</span>
+              <ChevronRight className="h-4 w-4" />
+            </div>
+          </Link>
+        </div>
       </div>
 
       {/* Quick Actions Section */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link 
             href="/dashboard/post-job"
             className="relative group p-4 bg-gradient-to-br from-indigo-50 to-white rounded-xl border border-indigo-100 hover:shadow-md transition-all duration-200 flex flex-col items-center text-center"
@@ -186,6 +221,18 @@ export default function DashboardPage() {
             </div>
             <h3 className="font-medium text-gray-900">Manage Jobs</h3>
             <p className="text-sm text-gray-500 mt-1">Edit or update existing jobs</p>
+          </Link>
+
+          <Link 
+            href="/dashboard/resumes"
+            className="relative group p-4 bg-gradient-to-br from-purple-50 to-white rounded-xl border border-purple-100 hover:shadow-md transition-all duration-200 flex flex-col items-center text-center"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-purple-500/0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+            <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center mb-3">
+              <FileText className="h-6 w-6 text-purple-600" />
+            </div>
+            <h3 className="font-medium text-gray-900">View Resumes</h3>
+            <p className="text-sm text-gray-500 mt-1">Check uploaded resumes</p>
           </Link>
         </div>
       </div>

@@ -68,7 +68,15 @@ export default function DashboardLayout({
               className={`flex items-center mt-3 px-5 py-4 text-white/90 rounded-xl transition-all duration-200 group ${pathname.includes('/dashboard/applications') ? 'bg-white/10' : 'hover:bg-white/10'}`}
             >
               <FileText className="h-5 w-5 mr-3 text-green-400 group-hover:text-green-300" />
-              <span className="font-medium">Application Submitted</span>
+              <span className="font-medium whitespace-nowrap">Application Submitted</span>
+            </Link>
+
+            <Link
+              href="/dashboard/resumes"
+              className={`flex items-center mt-3 px-5 py-4 text-white/90 rounded-xl transition-all duration-200 group ${pathname.includes('/dashboard/resumes') ? 'bg-white/10' : 'hover:bg-white/10'}`}
+            >
+              <FileText className="h-5 w-5 mr-3 text-purple-400 group-hover:text-purple-300" />
+              <span className="font-medium">Uploaded Resumes</span>
             </Link>
           </nav>
           

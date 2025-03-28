@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>http://localhost:3002</loc>
+<lastmod>2025-03-28T09:09:18.079Z</lastmod>
+<changefreq>daily</changefreq>
+<priority>1</priority>
+</url>
+<url>
+<loc>http://localhost:3002/jobs</loc>
+<lastmod>2025-03-28T09:09:18.079Z</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.9</priority>
+</url>
+<url>
+<loc>http://localhost:3002/jobs/67e14a4088378e6726f6e75d</loc>
+<lastmod>2025-03-28T09:09:18.079Z</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.8</priority>
+</url>
+</urlset>

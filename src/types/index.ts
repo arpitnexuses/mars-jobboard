@@ -20,4 +20,6 @@ export interface Job {
   qualifications: string[];
   education: string;
   experience: string;
+  salaryMin?: number;
+  salaryMax?: number;
 } 
