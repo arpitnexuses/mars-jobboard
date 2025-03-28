@@ -105,13 +105,24 @@ export default function JobDetailsPage({ params }: { params: PageParams }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
-            "@context": "https://schema.org/",
+            "@context": "https://schema.org",
             "@type": "JobPosting",
             "title": job.title,
             "description": job.description,
-            "datePosted": job.datePosted,
-            "validThrough": job.expiryDate,
-            "employmentType": job.type,
+            "identifier": {
+              "@type": "PropertyValue",
+              "name": job.company,
+              "value": job._id
+            },
+            "datePosted": new Date(job.datePosted).toISOString(),
+            "validThrough": new Date(job.expiryDate).toISOString(),
+            "employmentType": [
+              job.type === "Full Time" ? "FULL_TIME" : 
+              job.type === "Part Time" ? "PART_TIME" :
+              job.type === "Contract" ? "CONTRACTOR" :
+              job.type === "Temporary" ? "TEMPORARY" : 
+              job.type === "Intern" ? "INTERN" : "OTHER"
+            ],
             "hiringOrganization": {
               "@type": "Organization",
               "name": job.company,
@@ -126,30 +137,34 @@ export default function JobDetailsPage({ params }: { params: PageParams }) {
                 "addressLocality": job.location.city,
                 "addressRegion": job.location.state,
                 "postalCode": job.location.zipCode,
-                "addressCountry": job.location.country
+                "addressCountry": "US"
+              }
+            },
+            "baseSalary": {
+              "@type": "MonetaryAmount",
+              "currency": "USD",
+              "value": {
+                "@type": "QuantitativeValue",
+                ...(job.salaryMin && { "minValue": job.salaryMin }),
+                ...(job.salaryMax && { "maxValue": job.salaryMax }),
+                "unitText": "YEAR"
               }
             },
             "industry": job.industry,
-            "educationRequirements": job.education,
-            "experienceRequirements": job.experience,
+            "workHours": "Full-time",
+            "educationRequirements": {
+              "@type": "EducationalOccupationalCredential",
+              "credentialCategory": job.education
+            },
+            "experienceRequirements": {
+              "@type": "OccupationalExperienceRequirements",
+              "monthsOfExperience": parseInt(job.experience) * 12
+            },
             "qualifications": job.qualifications?.join("\n"),
             "responsibilities": job.responsibilities?.join("\n"),
-            ...(job.salaryMin || job.salaryMax ? {
-              "baseSalary": {
-                "@type": "MonetaryAmount",
-                "currency": "USD",
-                "value": {
-                  "@type": "QuantitativeValue",
-                  ...(job.salaryMin && { "minValue": job.salaryMin }),
-                  ...(job.salaryMax && { "maxValue": job.salaryMax }),
-                  "unitText": "YEAR"
-                }
-              }
-            } : {}),
-            "identifier": {
-              "@type": "PropertyValue",
-              "name": job.company,
-              "value": job._id
+            "applicantLocationRequirements": {
+              "@type": "Country",
+              "name": "US"
             }
           })
         }}
